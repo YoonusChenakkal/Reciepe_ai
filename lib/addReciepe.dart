@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:recipe_ai/provider.dart';
 
-class addReciepe extends StatelessWidget {
-  addReciepe({super.key});
-  String name = '';
-  double height = 0;
-  TextEditingController tc = TextEditingController();
-  textField(name, height, tc) {
+class AddRecipe extends StatelessWidget {
+  AddRecipe({Key? key}) : super(key: key);
+
+  textField(name, double height, tc, ctx) {
+    final controllerProvider = Provider.of<TextEditControllerProvider>(ctx);
     return Padding(
       padding: const EdgeInsets.only(left: 20),
       child: SizedBox(
@@ -64,6 +65,7 @@ class addReciepe extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final controllerProvider = Provider.of<TextEditControllerProvider>(context);
     return Scaffold(
       appBar: AppBar(),
       body: ListView(
@@ -71,40 +73,99 @@ class addReciepe extends StatelessWidget {
           SizedBox(
             height: 20,
           ),
-          textField(name = 'Reciepe Name', height = 70, tc),
+          textField('Recipe Name', 70,
+              controllerProvider.textEditingControllerName, context),
           SizedBox(
             height: 20,
           ),
-          textField(name = ' Ingredients', height = 200, tc),
+          textField('Ingredients', 200,
+              controllerProvider.textEditingControllerIngredients, context),
           SizedBox(
             height: 20,
           ),
-          textField(name = 'Instructions', height = 250, tc),
+          textField('Instructions', 250,
+              controllerProvider.textEditingControllerInstructions, context),
           SizedBox(
             height: 20,
           ),
-          textField(name = 'Tips', height = 100, tc),
+          textField('Tips', 100, controllerProvider.textEditingControllerTips,
+              context),
           SizedBox(
             height: 20,
           ),
           Padding(
-              padding: EdgeInsets.only(left: 230, right: 75),
-              child: SizedBox(
-                  height: 40,
-                  child: ElevatedButton(
-                      style: ButtonStyle(
-                          shape: MaterialStatePropertyAll(
-                              RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(6))),
-                          backgroundColor:
-                              MaterialStatePropertyAll(Colors.redAccent)),
-                      onPressed: () {},
-                      child: const Text(
-                        'Done',
-                        style: TextStyle(color: Colors.white),
-                      ))))
+            padding: EdgeInsets.only(left: 230, right: 75),
+            child: SizedBox(
+              height: 40,
+              child: ElevatedButton(
+                style: ButtonStyle(
+                  shape: MaterialStateProperty.all(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                  ),
+                  backgroundColor: MaterialStateProperty.all(Colors.redAccent),
+                ),
+                onPressed: () async {
+                  await controllerProvider.saveText();
+                  Navigator.pop(context);
+                },
+                child: const Text(
+                  'Done',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );
   }
 }
+
+// class AddRecipe extends StatelessWidget {
+//   AddRecipe({Key? key}) : super(key: key);
+
+//   @override
+//   Widget build(BuildContext context) {
+//     final controllerProvider = Provider.of<TextEditControllerProvider>(context);
+//     return Scaffold(
+//       appBar: AppBar(),
+//       body: ListView(
+//         padding: const EdgeInsets.all(20),
+//         children: [
+//           TextField(
+//             controller: controllerProvider.textEditingControllerName,
+//             decoration: InputDecoration(labelText: 'Recipe Name'),
+//           ),
+//           SizedBox(height: 20),
+//           TextField(
+//             controller: controllerProvider.textEditingControllerIngredients,
+//             decoration: InputDecoration(labelText: 'Ingredients'),
+//             maxLines: null,
+//           ),
+//           SizedBox(height: 20),
+//           TextField(
+//             controller: controllerProvider.textEditingControllerInstructions,
+//             decoration: InputDecoration(labelText: 'Instructions'),
+//             maxLines: null,
+//           ),
+//           SizedBox(height: 20),
+//           TextField(
+//             controller: controllerProvider.textEditingControllerTips,
+//             decoration: InputDecoration(labelText: 'Tips'),
+//             maxLines: null,
+//           ),
+//           SizedBox(height: 20),
+//           ElevatedButton(
+//             onPressed: () async {
+//               await controllerProvider.saveText();
+//               Navigator.pop(context);
+//             },
+//             child: Text('Save'),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }
